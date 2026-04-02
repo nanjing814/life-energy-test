@@ -1,4 +1,89 @@
-// 生命能量状态五维测评 - 主逻辑
+// 生命能量状态五维测评 - 主逻辑（完整修复版）
+// 修复了缺失的变量定义，确保结果页正常显示
+
+// 能量状态定义 - 必须放在DOMContentLoaded之前
+const energyStates = [
+    {
+        name: "新生萌芽期",
+        emoji: "🌱",
+        minScore: 25,
+        maxScore: 50,
+        description: "你的生命能量正在苏醒，如同春天的新芽，充满潜力但需要更多滋养。",
+        strengths: ["有成长的意愿", "开始自我觉察", "愿意尝试改变"],
+        growthAreas: ["建立稳定的自我认知", "学习情绪管理技巧", "培养日常正念习惯"],
+        recommendations: ["每天给自己5分钟安静时间", "记录一件今天感恩的小事", "尝试一次深呼吸练习"]
+    },
+    {
+        name: "稳定生长期",
+        emoji: "🌿",
+        minScore: 51,
+        maxScore: 70,
+        description: "你的生命能量稳定增长，如同茁壮成长的植物，正在建立内在根基。",
+        strengths: ["有一定的自我觉察能力", "能够识别情绪", "开始建立健康习惯"],
+        growthAreas: ["深化自我认知", "提升情绪调节能力", "建立支持系统"],
+        recommendations: ["每周进行一次自我反思", "练习接纳不完美的自己", "寻找一个成长伙伴"]
+    },
+    {
+        name: "绽放繁荣期",
+        emoji: "🌸",
+        minScore: 71,
+        maxScore: 85,
+        description: "你的生命能量充沛绽放，如同盛开的花朵，展现内在的美丽与力量。",
+        strengths: ["良好的自我认知", "情绪管理能力强", "有明确的人生方向"],
+        growthAreas: ["深化灵性成长", "扩展影响力", "培养领导力"],
+        recommendations: ["分享你的成长经验", "指导他人成长", "探索更深层的生命意义"]
+    },
+    {
+        name: "硕果累累期",
+        emoji: "🍎",
+        minScore: 86,
+        maxScore: 100,
+        description: "你的生命能量丰盛圆满，如同结满果实的树木，能够滋养自己与他人。",
+        strengths: ["深刻的自我认知", "卓越的情绪智慧", "清晰的人生使命"],
+        growthAreas: ["持续精进", "传承智慧", "创造更大价值"],
+        recommendations: ["成为他人的灯塔", "创作有影响力的内容", "建立支持他人成长的系统"]
+    }
+];
+
+// 维度配置
+const dimensions = {
+    "静·觉察力": { maxScore: 20 },
+    "觉·接纳度": { maxScore: 20 },
+    "开·认知重构": { maxScore: 20 },
+    "愿·内在动力": { maxScore: 20 },
+    "行·行动力": { maxScore: 20 }
+};
+
+// 分析模板
+const analysisTemplates = {
+    "静·觉察力": {
+        low: "觉察力是你的成长起点。建议从每天5分钟的静心观察开始，留意自己的情绪变化和身体感受。",
+        medium: "你已具备基本的觉察能力。可以尝试更深入地探索情绪背后的需求，提升自我认知的深度。",
+        high: "你的觉察力非常出色！继续保持这份自我观察的习惯，它将成为你内在成长的指南针。"
+    },
+    "觉·接纳度": {
+        low: "接纳是自我和解的开始。尝试对自己说'我允许自己有这样的感受'，从接纳小情绪开始练习。",
+        medium: "你正在学习接纳的艺术。继续练习无条件接纳自己，包括那些'不够好'的部分。",
+        high: "你的接纳度很高！这种自我包容的能力让你在变化中保持内心的稳定与平和。"
+    },
+    "开·认知重构": {
+        low: "认知重构是改变的开始。当负面想法出现时，尝试问自己'有没有另一种看待方式？'",
+        medium: "你已开始重构认知。继续练习用成长型思维看待挑战，把困难视为学习机会。",
+        high: "你的认知重构能力很强！这种灵活的思维方式让你在困境中也能找到出路和希望。"
+    },
+    "愿·内在动力": {
+        low: "内在动力需要被唤醒。探索什么对你真正重要，找到那个能点燃你热情的生命愿景。",
+        medium: "你已找到一些内在动力。继续明确你的核心价值观，让它们成为你前进的指南针。",
+        high: "你的内在动力充沛！清晰的生命愿景让你在成长道路上坚定而有方向。"
+    },
+    "行·行动力": {
+        low: "行动力从一小步开始。设定一个微小但确定的目标，比如'今天做一件让自己开心的小事'。",
+        medium: "你已具备一定的行动力。继续将想法转化为具体行动，建立持续行动的习惯。",
+        high: "你的行动力很强！这种将愿景落地的能力让你在成长道路上稳步前进。"
+    }
+};
+
+// 原有的主逻辑从这里开始
 document.addEventListener('DOMContentLoaded', function() {
     // 状态管理
     let currentQuestionIndex = 0;
@@ -159,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 确定能量状态
         const userState = energyStates.find(state => 
             totalScore >= state.minScore && totalScore <= state.maxScore
-        );
+        ) || energyStates[0];
         
         // 生成维度分析
         const dimensionAnalysis = {};
@@ -242,378 +327,135 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
             
-            <div class="analysis-section">
-                <h3 class="section-title">五维详细分析</h3>
-                <div id="dimensionDetails"></div>
+            <div class="action-buttons">
+                <button class="action-btn action-btn-primary" id="saveResultBtn">
+                    <i class="fas fa-save"></i> 保存结果
+                </button>
+                <button class="action-btn action-btn-secondary" id="retakeTestBtn">
+                    <i class="fas fa-redo"></i> 重新测试
+                </button>
             </div>
             
-            <!-- 简化版私域引流 -->
-            <div class="simple-contact-section" style="background: rgba(139, 90, 43, 0.05); border-radius: 12px; padding: 25px; margin-top: 30px; text-align: center; border: 1px solid rgba(139, 90, 43, 0.2);">
-                <h3 style="color: #8B5A2B; font-size: 18px; margin-bottom: 15px;">💬 需要深度解析？</h3>
-                <p style="color: #5D4037; margin-bottom: 15px; line-height: 1.6;">
-                    专业教练的深度解析，能帮你：
-                </p>
-                <ul style="text-align: left; display: inline-block; margin: 10px 0 20px 0; padding-left: 20px;">
-                    <li>真正理解每个维度对你的具体意义</li>
-                    <li>获得针对你个人情况的成长建议</li>
-                    <li>解答你在关系断裂期的具体困惑</li>
-                    <li>开启真正的觉醒重生之旅</li>
-                </ul>
-                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: inline-block;">
-                    <div style="font-size: 16px; color: #8B5A2B; margin-bottom: 5px;">添加南静老师微信</div>
-                    <div style="font-size: 20px; font-weight: bold; color: #07C160;">loveseed001</div>
-                    <div style="font-size: 14px; color: #666; margin-top: 5px;">（备注"测评解析"）</div>
+            <div class="wechat-section">
+                <div class="wechat-title">
+                    <i class="fab fa-weixin"></i> 领取深度解析
                 </div>
-                <p style="font-size: 14px; color: #888; margin-top: 10px;">
-                    微信号已自动复制，打开微信即可添加
-                </p>
+                <div class="wechat-desc">
+                    添加南静老师微信，领取一次 <strong>1v1个性化深度解析</strong>
+                </div>
+                <div class="wechat-info">
+                    <div class="wechat-id">微信：loveseed001</div>
+                    <div class="wechat-note">添加时请备注"测评解析"</div>
+                </div>
+                <button class="wechat-btn" id="copyWechatBtn">
+                    <i class="fas fa-copy"></i> 复制微信号
+                </button>
+            </div>
+            
+            <div class="footer-links">
+                <a href="#" id="privacyLink">隐私政策</a> · 
+                <a href="#" id="contactLink">联系我们</a> · 
+                <a href="#" id="shareWechat">分享给朋友</a> · 
+                <a href="#" id="copyLink">复制测评链接</a>
             </div>
         `;
-        
-        // 渲染维度分数
-        const dimensionScoresContainer = document.getElementById('dimensionScores');
-        Object.entries(dimensionAnalysis).forEach(([dimension, data]) => {
-            const dimensionItem = document.createElement('div');
-            dimensionItem.className = 'dimension-score-item';
-            dimensionItem.innerHTML = `
-                <div class="dimension-name">${dimension}</div>
-                <div class="dimension-score">${data.score}<span style="font-size: 14px; color: #999;">/${data.maxScore}</span></div>
-                <div class="progress-container">
-                    <div class="progress-bar-small">
-                        <div class="progress-small" style="width: ${data.percentage}%"></div>
-                    </div>
-                </div>
-                <div class="dimension-max">${Math.round(data.percentage)}%</div>
-            `;
-            dimensionScoresContainer.appendChild(dimensionItem);
-        });
-        
-        // 渲染维度详细分析
-        const dimensionDetailsContainer = document.getElementById('dimensionDetails');
-        Object.entries(dimensionAnalysis).forEach(([dimension, data]) => {
-            const detailItem = document.createElement('div');
-            detailItem.className = 'dimension-detail-item';
-            detailItem.style.marginBottom = '20px';
-            detailItem.style.padding = '15px';
-            detailItem.style.backgroundColor = 'rgba(139, 90, 43, 0.05)';
-            detailItem.style.borderRadius = '8px';
-            detailItem.innerHTML = `
-                <div style="font-weight: 600; color: #8B5A2B; margin-bottom: 8px;">${dimension}</div>
-                <div style="color: #5D4037; line-height: 1.5;">${data.analysis}</div>
-                <div style="margin-top: 10px; font-size: 14px; color: #D4A76A;">
-                    <i class="fas fa-chart-line"></i> 得分: ${data.score}/${data.maxScore} (${Math.round(data.percentage)}%)
-                </div>
-            `;
-            dimensionDetailsContainer.appendChild(detailItem);
-        });
         
         // 渲染雷达图
         renderRadarChart(dimensionAnalysis);
         
+        // 渲染维度分数
+        renderDimensionScores(dimensionAnalysis);
+        
         // 绑定结果页面事件
-        bindResultEvents();
+        bindResultEvents(totalScore, userState, dimensionAnalysis);
     }
     
     function renderRadarChart(dimensionAnalysis) {
-        // 确保Canvas元素存在且有尺寸
-        const canvas = document.getElementById('radarChart');
-        if (!canvas) {
-            console.error('找不到雷达图Canvas元素');
-            return;
-        }
-        
-        // 设置Canvas明确尺寸 - 确保完美的圆形
-        const container = canvas.parentElement;
-        
-        // 强制容器为正方形
-        container.style.width = '400px';
-        container.style.height = '400px';
-        container.style.margin = '0 auto';
-        container.style.display = 'flex';
-        container.style.justifyContent = 'center';
-        container.style.alignItems = 'center';
-        
-        // 设置Canvas为固定正方形
-        const size = 350; // 固定尺寸，确保完美圆形
-        canvas.width = size;
-        canvas.height = size;
-        canvas.style.width = size + 'px';
-        canvas.style.height = size + 'px';
-        canvas.style.display = 'block';
-        canvas.style.margin = '0 auto';
-        
-        const ctx = canvas.getContext('2d');
-        
-        const labels = Object.keys(dimensionAnalysis);
-        const scores = Object.values(dimensionAnalysis).map(data => data.percentage);
-        const maxScores = new Array(labels.length).fill(100);
+        const ctx = document.getElementById('radarChart').getContext('2d');
         
         // 如果已有图表实例，先销毁
         if (window.radarChartInstance) {
             window.radarChartInstance.destroy();
         }
         
+        const labels = Object.keys(dimensionAnalysis);
+        const data = labels.map(dim => dimensionAnalysis[dim].percentage);
+        
         window.radarChartInstance = new Chart(ctx, {
             type: 'radar',
             data: {
                 labels: labels,
-                datasets: [
-                    {
-                        label: '你的得分',
-                        data: scores,
-                        backgroundColor: 'rgba(139, 90, 43, 0.2)',
-                        borderColor: 'rgba(139, 90, 43, 1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: 'rgba(139, 90, 43, 1)',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 4
-                    },
-                    {
-                        label: '满分参考',
-                        data: maxScores,
-                        backgroundColor: 'rgba(212, 167, 106, 0.1)',
-                        borderColor: 'rgba(212, 167, 106, 0.5)',
-                        borderWidth: 1,
-                        borderDash: [5, 5],
-                        pointRadius: 0
-                    }
-                ]
+                datasets: [{
+                    label: '能量分数',
+                    data: data,
+                    backgroundColor: 'rgba(139, 90, 43, 0.2)',
+                    borderColor: 'rgba(139, 90, 43, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(139, 90, 43, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }]
             },
             options: {
-                responsive: false, // 关闭响应式，使用固定尺寸
-                maintainAspectRatio: false, // 不保持宽高比，使用固定尺寸
                 scales: {
                     r: {
                         beginAtZero: true,
-                        min: 0,
                         max: 100,
                         ticks: {
-                            stepSize: 20,
-                            backdropColor: 'transparent',
-                            display: true
-                        },
-                        angleLines: {
-                            color: 'rgba(212, 167, 106, 0.3)',
-                            lineWidth: 1,
-                            display: true
-                        },
-                        grid: {
-                            color: 'rgba(212, 167, 106, 0.3)',
-                            circular: true,
-                            lineWidth: 1
+                            stepSize: 20
                         },
                         pointLabels: {
                             font: {
                                 size: 14,
-                                family: "'PingFang SC', 'Microsoft YaHei', sans-serif",
-                                weight: '500'
+                                family: "'PingFang SC', 'Microsoft YaHei', sans-serif"
                             },
-                            color: '#5D4037',
-                            padding: 15
-                        },
-                        ticks: {
-                            backdropColor: 'transparent',
-                            color: '#D4A76A',
-                            font: {
-                                size: 12
-                            },
-                            stepSize: 20
-                        },
-                        suggestedMin: 0,
-                        suggestedMax: 100
+                            color: '#5D4037'
+                        }
                     }
                 },
                 plugins: {
                     legend: {
-                        position: 'bottom',
-                        labels: {
-                            font: {
-                                size: 14,
-                                family: "'PingFang SC', 'Microsoft YaHei', sans-serif"
-                            },
-                            color: '#5D4037',
-                            padding: 20
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(139, 90, 43, 0.9)',
-                        titleFont: {
-                            size: 14,
-                            family: "'PingFang SC', 'Microsoft YaHei', sans-serif"
-                        },
-                        bodyFont: {
-                            size: 14,
-                            family: "'PingFang SC', 'Microsoft YaHei', sans-serif"
-                        },
-                        padding: 12,
-                        cornerRadius: 8
+                        display: false
                     }
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: true
             }
         });
     }
     
-    function bindResultEvents() {
-        // 保存报告
+    function renderDimensionScores(dimensionAnalysis) {
+        const container = document.getElementById('dimensionScores');
+        container.innerHTML = '';
+        
+        Object.entries(dimensionAnalysis).forEach(([dimension, data]) => {
+            const scoreElement = document.createElement('div');
+            scoreElement.className = 'dimension-score';
+            
+            const percentage = Math.round(data.percentage);
+            let levelClass = 'score-low';
+            if (percentage >= 70) levelClass = 'score-high';
+            else if (percentage >= 40) levelClass = 'score-medium';
+            
+            scoreElement.innerHTML = `
+                <div class="dimension-name">${dimension}</div>
+                <div class="score-bar-container">
+                    <div class="score-bar ${levelClass}" style="width: ${percentage}%"></div>
+                </div>
+                <div class="score-value">${percentage}%</div>
+            `;
+            
+            container.appendChild(scoreElement);
+        });
+    }
+    
+    function bindResultEvents(totalScore, userState, dimensionAnalysis) {
+        // 保存结果
         document.getElementById('saveResultBtn').addEventListener('click', function() {
-            // 使用StorageManager保存结果
             const resultData = {
+                date: new Date().toLocaleString('zh-CN'),
                 totalScore: totalScore,
                 energyState: userState.name,
                 dimensionScores: dimensionAnalysis,
-                answers: answers,
-                userState: userState
-            };
-            
-            const saveResult = StorageManager.saveTestResult(resultData);
-            
-            if (saveResult.success) {
-                // 生成可下载的文本报告
-                generateTextReport(resultData);
-                alert('✅ 测评结果已成功保存到本地！\n\n下次打开页面时，你可以查看历史记录。\n\n报告ID：' + saveResult.resultId);
-            } else {
-                alert('❌ 保存失败：' + saveResult.message + '\n\n请检查浏览器设置，确保允许本地存储。');
-            }
-        });
-        
-        // 重新测评
-        document.getElementById('retakeTestBtn').addEventListener('click', function() {
-            // 重置状态
-            currentQuestionIndex = 0;
-            answers = new Array(questions.length).fill(null);
-            userScores = {
-                "静·觉察力": 0,
-                "觉·接纳度": 0,
-                "开·认知重构": 0,
-                "愿·内在动力": 0,
-                "行·行动力": 0
-            };
-            
-            // 切换回介绍页面
-            resultContainer.classList.remove('active');
-            introContainer.classList.add('active');
-            updateProgress();
-        });
-        
-        // 自动复制微信号功能（结果页面显示时自动执行）
-        function autoCopyWechatId() {
-            const wechatId = 'loveseed001';
-            
-            // 使用现代Clipboard API
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(wechatId).then(() => {
-                    console.log('微信号已自动复制:', wechatId);
-                }).catch(err => {
-                    console.log('自动复制失败，使用备用方法');
-                    fallbackCopy(wechatId);
-                });
-            } else {
-                fallbackCopy(wechatId);
-            }
-            
-            function fallbackCopy(text) {
-                const input = document.createElement('input');
-                input.value = text;
-                input.style.position = 'fixed';
-                input.style.opacity = '0';
-                document.body.appendChild(input);
-                input.select();
-                
-                try {
-                    document.execCommand('copy');
-                    console.log('备用方法复制成功:', text);
-                } catch (err) {
-                    console.log('复制失败，用户需要手动复制');
-                }
-                
-                document.body.removeChild(input);
-            }
-        }
-        
-        // 结果页面显示时自动复制微信号
-        setTimeout(autoCopyWechatId, 1000);
-        
-        // 窗口resize时重新渲染雷达图
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                if (window.radarChartInstance && dimensionAnalysis) {
-                    window.radarChartInstance.destroy();
-                    renderRadarChart(dimensionAnalysis);
-                }
-            }, 250);
-        });
-        
-        // 分享功能
-        document.getElementById('shareWechat').addEventListener('click', function() {
-            alert('微信分享功能需要配置微信JS-SDK。在实际部署中，这里会调用微信分享接口。');
-        });
-        
-        document.getElementById('copyLink').addEventListener('click', function() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('链接已复制到剪贴板！');
-            }).catch(err => {
-                alert('复制失败，请手动复制链接：' + url);
-            });
-        });
-    }
-    
-    // 隐私政策和联系链接
-    document.getElementById('privacyLink')?.addEventListener('click', function() {
-        alert('隐私政策：\n1. 所有测评数据仅用于生成个人报告\n2. 数据不会与第三方共享\n3. 用户可以随时要求删除数据\n4. 联系方式：nanjing_coach@example.com');
-    });
-    
-    document.getElementById('contactLink')?.addEventListener('click', function() {
-        alert('联系我们：\n\n✨ 添加南静老师微信，领取一次 1v1个性化深度解析\n✨ 微信：loveseed001\n\n📱 电话：139-5702-6325\n\n💫 灵静花园 · 女性成长陪伴平台');
-    });
-    
-    // 生成文本报告函数
-    function generateTextReport(resultData) {
-        const reportContent = `
-生命能量状态五维测评报告
-============================
-测评时间：${new Date().toLocaleString('zh-CN')}
-综合得分：${resultData.totalScore}/100
-能量状态：${resultData.energyState}
-
-五维能量分析：
-${Object.entries(resultData.dimensionScores).map(([dimension, data]) => 
-    `• ${dimension}: ${data.score}/${data.maxScore} (${Math.round(data.percentage)}%)`
-).join('\n')}
-
-详细分析：
-${Object.entries(resultData.dimensionScores).map(([dimension, data]) => 
-    `【${dimension}】\n${data.analysis}\n`
-).join('\n')}
-
-你的优势：
-${resultData.userState.strengths.map(strength => `• ${strength}`).join('\n')}
-
-成长空间：
-${resultData.userState.growthAreas.map(area => `• ${area}`).join('\n')}
-
-能量锦囊：
-${resultData.userState.recommendations.map(rec => `• ${rec}`).join('\n')}
-
---------------------------------
-感谢参与测评！
-如需深度解析，请联系：
-微信：loveseed001
-电话：139-5702-6325
-        `.trim();
-        
-        // 创建可下载的文件
-        const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `生命能量测评报告_${new Date().toISOString().slice(0,10)}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-});
+                userState: user
